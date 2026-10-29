@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fa" dir="rtl" data-theme="night">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" />
+  <title>تکناموز | دستیار هوش مصنوعی حرفه‌ای</title>
+  <meta name="description" content="تکناموز (Technamooz AI) — چت هوش مصنوعی حرفه‌ای با ۱۶ عامل متخصص (Agent)، انتخاب مدل از Cloudflare، OpenRouter، OrcaRouter و OneRouter و حافظهٔ اختصاصی. ساختهٔ امیر پارسا." />
+  <meta name="author" content="Amir Parsa (امیر پارسا)" />
+  <meta name="theme-color" content="#0c0e12" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="تکناموز | Technamooz AI" />
+  <meta property="og:description" content="دستیار هوش مصنوعی حرفه‌ای تکناموز — وب‌چت، ربات تلگرام و ۱۶ عامل متخصص." />
+  <meta property="og:image" content="/assets/og-cover.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32" />
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- ============================ topbar ============================ -->
+  <header class="topbar">
+    <div class="topbar-in">
+      <a class="brand" href="/" aria-label="تکناموز">
+        <img src="/assets/logo.svg" alt="" width="26" height="26" />
+        <span class="brand-name">تکناموز</span>
+        <span class="brand-ver">v1.0.0</span>
+      </a>
+
+      <div class="top-chips" role="group" aria-label="تنظیم گفتگو">
+        <button id="chipPersona" class="chip" type="button" title="انتخاب عامل متخصص">
+          <span class="chip-ico" id="chipPersonaEmoji">🧠</span>
+          <span class="chip-text"><span class="chip-label">عامل</span><span class="chip-value" id="chipPersonaName">—</span></span>
+          <b class="chip-caret">▾</b>
+        </button>
+        <button id="chipModel" class="chip" type="button" title="انتخاب مدل (Ctrl+K)">
+          <span class="chip-ico">⌘</span>
+          <span class="chip-text"><span class="chip-label">مدل</span><span class="chip-value" id="chipModelName">—</span></span>
+          <b class="chip-caret">▾</b>
+        </button>
+      </div>
+
+      <div class="top-actions">
+        <span id="connPill" class="conn-pill" title="وضعیت اتصال پلتفرم‌ها">
+          <i id="connDot" class="conn-dot off" aria-hidden="true"></i><span id="connText" class="conn-text">—</span>
+        </span>
+        <div class="theme-wrap">
+          <button id="btnTheme" class="icon-btn" type="button" title="انتخاب تم" aria-haspopup="true" aria-expanded="false" aria-controls="themeMenu">
+            <span class="theme-dot" aria-hidden="true"></span>
+          </button>
+          <div id="themeMenu" class="theme-menu" hidden role="menu" aria-label="انتخاب تم">
+            <div class="theme-title">تم ظاهری</div>
+            <div id="themeOptions"></div>
+          </div>
+        </div>
+        <button id="btnSupportTop" class="icon-btn" type="button" title="پشتیبانی و بازخورد">🆘</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================ notices ============================ -->
+  <div id="maintenance" class="notice strip-danger" hidden role="status"></div>
+  <div id="announce" class="notice strip-soft" hidden role="status"></div>
+
+  <!-- ============================ chat stage ============================ -->
+  <main class="stage">
+    <div class="col">
+      <section id="chatLog" class="chat-log" role="log" aria-live="polite" aria-label="گفتگو"></section>
+    </div>
+  </main>
+
+  <!-- ============================ composer ============================ -->
+  <div class="dock">
+    <form id="composerForm" class="composer" autocomplete="off">
+      <div class="c-tools">
+        <button id="btnDeep" class="tool-btn" type="button" title="پاسخ بلندتر، عمیق‌تر و حسابرسی‌شده">
+          <span class="deep-glyph" aria-hidden="true">⚡</span> نهایت قدرت
+        </button>
+        <button id="btnNewChat" class="tool-btn" type="button" title="شروع گفتگوی تازه">✚ گفتگوی جدید</button>
+        <button id="btnReset" class="tool-btn" type="button" title="حافظه و تاریخچه">🧹 پاک‌سازی</button>
+        <span id="streamState" class="stream-state" aria-live="polite"></span>
+      </div>
+      <div class="c-row">
+        <textarea id="messageInput" rows="1" maxlength="24000" placeholder="برای تکناموز بنویس…" aria-label="پیام"></textarea>
+        <button id="btnSend" class="send-btn" type="submit" title="ارسال (Enter)">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 12l14-7-4.5 7L18 19 4 12z" fill="currentColor"/></svg>
+        </button>
+        <button id="btnStop" class="send-btn stop" type="button" title="توقف" hidden>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+        </button>
+      </div>
+      <div class="c-foot">
+        <span id="charCount" dir="ltr">0 / 24000</span>
+        <span class="foot-hint">تکناموز ممکن است اشتباه کند؛ اطلاعات حیاتی را راستی‌آزمایی کن.</span>
+      </div>
+    </form>
+  </div>
+
+  <!-- ============================ footer ============================ -->
+  <footer class="foot">
+    <div id="socialLinks" class="foot-social"></div>
+    <div class="foot-meta">
+      <span id="footVersion">تکناموز نسخهٔ ۱.۰.۰</span>
+      <span class="dot-sep" aria-hidden="true">·</span>
+      <span>ساختهٔ امیر پارسا (Amir Parsa)</span>
+    </div>
+  </footer>
+
+  <!-- ============================ modal: model picker ============================ -->
+  <div id="modalModel" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modelTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="modelTitle">انتخاب مدل</h3>
+        <button class="icon-btn" type="button" data-close="modalModel" title="بستن">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="platformTabs" class="ptabs" role="tablist" aria-label="پلتفرم"></div>
+        <div class="search-row">
+          <input id="modelSearch" type="search" placeholder="جستجوی مدل…" aria-label="جستجوی مدل" dir="auto" />
+          <label class="check-soft"><input id="freeOnly" type="checkbox" /><span>فقط رایگان</span></label>
+          <button id="btnRefreshModels" class="tool-btn" type="button" title="دریافت تازهٔ فهرست">⟳ تازه</button>
+        </div>
+        <div id="modelCount" class="mini-note">—</div>
+        <div id="modelNote" class="mini-note note-warn" hidden></div>
+        <div id="modelList" class="model-list" role="list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ modal: persona picker ============================ -->
+  <div id="modalPersona" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="personaTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="personaTitle">انتخاب عامل متخصص</h3>
+        <button class="icon-btn" type="button" data-close="modalPersona" title="بستن">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-lede">هر عامل، متخصص با یک رویهٔ کاری، حسابرسی پیش از تحویل و مدل پیشنهادی خودش است.</p>
+        <div id="personaGrid" class="persona-grid"></div>
+        <p class="modal-lede current-label">عامل فعال: <b id="personaCurrentLabel">—</b></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ modal: support / feedback ============================ -->
+  <div id="modalSupport" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="supportTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="supportTitle">پشتیبانی و بازخورد</h3>
+        <button class="icon-btn" type="button" data-close="modalSupport" title="بستن">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="supportSocials" class="social-list"></div>
+        <form id="feedbackForm" class="fb-form">
+          <label class="fb-label" for="feedbackText">پیام به سازنده (پیشنهاد، گزارش خطا، انتقاد):</label>
+          <textarea id="feedbackText" rows="3" maxlength="2500" required dir="auto"></textarea>
+          <span id="feedbackMsg" class="fb-msg"></span>
+          <button type="submit" class="btn primary">ارسال بازخورد</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ modal: reset confirm ============================ -->
+  <div id="modalReset" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="resetTitle">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="resetTitle">پاک‌سازی حافظه</h3>
+        <button class="icon-btn" type="button" data-close="modalReset" title="بستن">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="reset-list">
+          <button type="button" data-reset="chat" class="reset-row"><b>پاک‌سازی گفتگوی جاری</b><span>تاریخچهٔ این گفتگو حذف می‌شود؛ دانسته‌ها دربارهٔ شما می‌ماند</span></button>
+          <button type="button" data-reset="memory" class="reset-row"><b>فراموشی دانسته‌ها و خلاصه</b><span>نکاتی که دربارهٔ شما یاد گرفته حذف می‌شود (چند دور آخرشان می‌ماند)</span></button>
+          <button type="button" data-reset="all" class="reset-row danger"><b>فراموشی کامل</b><span>کل حافظهٔ این حساب پاک می‌شود — برگشت‌پذیر نیست</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
+
+  <script src="/js/app.js" defer></script>
+</body>
+</html>

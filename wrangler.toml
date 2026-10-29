@@ -1,0 +1,47 @@
+# ============================================================
+#  Technamooz AI — technamooz-ai-version1.0.0
+#  Developer / Author: Amir Parsa (امیر پارسا)
+#  Platform: Cloudflare Workers (no server — 100% edge, free tier)
+#  Telegram: @technamooz   |   Support: @technamooz_support
+# ------------------------------------------------------------
+#  Storage: Cloudflare KV (no D1 migrations needed — deploy-proof)
+#  AI providers (all four share the same chat/memory/persona core):
+#    1. Cloudflare Workers AI  — free, [ai] binding, no key required
+#    2. OpenRouter             — free + paid models, key in admin panel
+#    3. OrcaRouter             — free + paid models, key in admin panel
+#    4. OneRouter              — free + paid models, key in admin panel
+#  Provider keys, Telegram token and settings are stored in KV from /admin.
+# ============================================================
+
+name = "technamooz-ai"
+main = "src/index.js"
+compatibility_date = "2025-03-10"
+
+# ── Static assets (public chat page + admin panel + logo) ──
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "none"
+# Every request must pass through the Worker so security headers, /admin,
+# API routes and the Telegram webhook are always handled consistently.
+run_worker_first = true
+
+# ── Cloudflare Workers AI — FREE, configured automatically ──
+[ai]
+binding = "AI"
+
+# ── KV database (users, memory, keys, settings, logs) ──
+# Run:  npm run setup          (creates the namespace and patches this id)
+# Then: npm run deploy
+[[kv_namespaces]]
+binding = "DB"
+id = ""
+
+# ── Optional custom domain (uncomment on your zone) ──
+# routes = [
+#   { pattern = "chat.your-domain.ir", custom_domain = true }
+# ]
+
+[vars]
+APP_VERSION = "1.0.0"
+APP_NAME = "Technamooz AI"

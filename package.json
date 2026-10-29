@@ -1,0 +1,24 @@
+{
+  "name": "technamooz-ai",
+  "version": "1.0.0",
+  "description": "Technamooz AI — technamooz-ai-version1.0.0 — Professional AI chat platform on Cloudflare Workers: web chat + Telegram bot + admin panel. Providers: Cloudflare Workers AI, OpenRouter, OrcaRouter, OneRouter. Author: Amir Parsa (امیر پارسا).",
+  "author": "Amir Parsa (امیر پارسا)",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "node scripts/setup-kv.mjs",
+    "check": "node scripts/check-syntax.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:sse": "node scripts/test-sse-parser.mjs",
+    "assets": "node scripts/generate-assets.mjs",
+    "predeploy": "npm run check && npm test",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5",
+    "wrangler": "^3.114.17"
+  }
+}
